@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -78,21 +79,30 @@ function Coins() {
   // }, [])
   return (
     <Container>
+      <Helmet>
+        <title>코인</title>
+      </Helmet>
       <Header>
         <Title>코인</Title>
       </Header>
-      {isLoading ? <Loader>Loading...</Loader> : 
-      (<CoinsList>
-        {data?.slice(0, 100).map(coin => 
-          <Coin key={coin.id}>
-            <Link to={`/${coin.id}`} state={{name: coin.name}}>
-              <Img src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLocaleLowerCase()}`}/>
-              {coin.name} &rarr;
-            </Link>
-          </Coin>)}
-      </CoinsList>) }
+      {isLoading ? (
+        <Loader>Loading...</Loader>
+      ) : (
+        <CoinsList>
+          {data?.slice(0, 100).map((coin) => (
+            <Coin key={coin.id}>
+              <Link to={`/${coin.id}`} state={{ name: coin.name }}>
+                <Img
+                  src={`https://cryptoicon-api.vercel.app/api/icon/${coin.symbol.toLocaleLowerCase()}`}
+                />
+                {coin.name} &rarr;
+              </Link>
+            </Coin>
+          ))}
+        </CoinsList>
+      )}
     </Container>
-  )
+  );
 }
 
 export default Coins;
