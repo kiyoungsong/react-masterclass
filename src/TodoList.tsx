@@ -1,19 +1,83 @@
 import React, { useState } from "react";
 import { useForm } from 'react-hook-form';
 
+interface IForm {
+  email: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+}
+
 function ToDoList() {
   // register가 있으면 onChange항수가 필요없음
   // watch은 변경을 주시함
-  const { register, watch } = useForm();
-  console.log(watch());
+  // handleSubmit => defaultPrevent, Validation담당
+  // formState 에러를 표시함
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm <IForm>({
+    defaultValues: {
+      email: '@naver.com' // 이렇게 기본값을 지정해 줄수도 있다.
+    }
+  });
+
+  const onValid = (data: any) => {
+    console.log(data);
+  }
+  
   return (
     <div>
-      <form>
-        <input {...register("Email")} placeholder="Email" />
-        <input {...register("FirstName")} placeholder="First Name" />
-        <input {...register("LastName")} placeholder="Last Name" />
-        <input {...register("Username")} placeholder="Username" />
-        <input {...register("PasswordName")} placeholder="Password Name" />
+      <form
+        style={{ display: "flex", flexDirection: "column" }}
+        onSubmit={handleSubmit(onValid)}
+      >
+        <input
+          {...register("email", {
+            required: "Email is required",
+            pattern: {
+              value: /^[A-Za-z0-9._%+-]+@naver.com$/,
+              message: "Only naver.com emails allowed",
+            },
+          })}
+          placeholder="Email"
+        />
+        <span>{errors?.email?.message}</span>
+        <input
+          {...register("firstName", { required: "firstName is required" })}
+          placeholder="First Name"
+        />
+        <span>{errors?.firstName?.message}</span>
+        <input
+          {...register("lastName", { required: "lastName is required" })}
+          placeholder="Last Name"
+        />
+        <span>{errors?.lastName?.message}</span>
+        <input
+          {...register("username", {
+            required: "username is required",
+            minLength: {
+              value: 3,
+              message: "username length should be over 3",
+            },
+          })}
+          placeholder="Username"
+        />
+        <span>{errors?.username?.message}</span>
+        <input
+          {...register("password", {
+            required: "password is required",
+            minLength: {
+              value: 5,
+              message: "Password length should be over 5",
+            },
+          })}
+          placeholder="Password"
+        />
+        <span>{errors?.password?.message}</span>
         <button>Add</button>
       </form>
     </div>
