@@ -1,48 +1,27 @@
-import React, { useState } from "react";
-import { useForm } from 'react-hook-form';
-import { atom, useRecoilState, useRecoilValue } from "recoil";
-
-interface IForm {
-  toDo: string;
-}
-
-interface IToDo {
-  id: number;
-  text: string;
-  category: "TO_DO" | "DOING" | "DONE";
-}
-
-const toDoState = atom<IToDo[]>({
-  key: "toDo",
-  default: [],
-})
-
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useRecoilValue } from "recoil";
+import { toDoState } from "./atoms";
+import CreateToDo from "./CreateToDo";
+import ToDo from "./ToDo";
 
 function ToDoList() {
-  const [toDos, setToDos] = useRecoilState(toDoState);
-  const { register, handleSubmit, setValue } = useForm<IForm>();
-  const onSubmit = ({ toDo }: IForm)  => {
-    setToDos(oldToDos => [{text: toDo, id: Date.now(), category: "TO_DO" },...oldToDos])
-    setValue("toDo", '');
-  }
-
-  console.log(toDos)
+  const toDos = useRecoilValue(toDoState);
   return (
     <div>
       <h1>To Dos</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("toDo", { required: "Please write a to do" }) } placeholder="Write a to do" />
-        <button>Add</button>
-      </form>
+      <CreateToDo />
       <ul>
-        {toDos.map(toDo => <li key={toDo.id}>{toDo.text}</li>)}
+        {toDos.map((toDo) => (
+          <ToDo key={toDo.id} {...toDo} />
+        ))}
       </ul>
     </div>
   );
 }
 
 /*
- * react-hook-form 적용 
+ * react-hook-form 적용
  */
 interface IHookForm {
   email: string;
@@ -74,12 +53,16 @@ export function ToDoListReactHookForm() {
 
   const onValid = (data: any) => {
     if (data.password !== data.password1) {
-      return setError("password1", { message: "Password are not the same"}, { shouldFocus: true})
+      return setError(
+        "password1",
+        { message: "Password are not the same" },
+        { shouldFocus: true }
+      );
     }
     // 특정한 요소가 아닌 form전체 요소에 대한 에러임
-    setError("extraError", { message: "Server Offline"})
-  }
-  
+    setError("extraError", { message: "Server Offline" });
+  };
+
   return (
     <div>
       <form
