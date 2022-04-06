@@ -3,7 +3,7 @@ import styled from "styled-components";
 import DraggableCard from "./DragabbleCard";
 
 const Warpper = styled.div`
-  padding: 20px 10px;
+  padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
   min-height: 300px;
@@ -24,9 +24,10 @@ interface IAera {
 }
 
 const Area = styled.div<IAera>`
-  background-color: ${(props) => (props.isDraggingOver ? "pink" : props.isDraggingFromThis ? "red" : "blue")};
+  background-color: ${(props) => (props.isDraggingOver ? "#defe6e9" : props.isDraggingFromThis ? "#b2bec3" : "transparent")};
   flex-grow: 1;
   transition: background-color .3s ease-in-out;
+  padding: 20px;
 `;
 
 interface IBoard {
@@ -40,10 +41,10 @@ function Board({toDos, boardId}: IBoard) {
     <Warpper>
       <Title>{boardId}</Title>
       <Droppable droppableId={boardId}>
-        {(provided, snapshot) => (
+        {(provided, info) => (
           <Area
-            isDraggingOver={snapshot.isDraggingOver}
-            isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)}
+            isDraggingOver={info.isDraggingOver}
+            isDraggingFromThis={Boolean(info.draggingFromThisWith)}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
